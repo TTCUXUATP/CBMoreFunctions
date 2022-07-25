@@ -8,6 +8,7 @@ local sampev = require "lib.samp.events"
 local imgui = require 'imgui'
 require "lib.vkeys"
 requests = require('requests')
+local bNotf, notf = pcall(import, "lib\\imgui_notf.lua")
 
 local encoding = require 'encoding'
 encoding.default = 'CP1251'
@@ -79,6 +80,7 @@ end
  
  sampAddChatMessage("[SERVER]: {FFFFFF}CommandBlockMoreFunctions v"..version.." успешно загружен.",COLOR_MSG)
  if version ~= data['aversion'] then sampAddChatMessage("[SERVER]: {FFFFFF}У вас установлена устарелая версия скрипта CBMoreFunctions. Пожалуйста, обновите её!",COLOR_MSG) end
+ if not bNotf then sampAddChatMessage("[SERVER]: {FFFFFF}У вас не установлена библиотека imgui_notf. Пожалуйста, установите её!",COLOR_MSG) end 
  
  pID = sampGetPlayerIdByCharHandle(playerPed)
  
@@ -528,6 +530,11 @@ if not text:find("#") then return true end
 		return false
 	end
 	
+	if text:find('уведомление') and bNotf then
+		local notifyText, notifyTime = text:match('уведомление (.+) (%d+)')
+		notf.addNotification(notifyText, tonumber(notifyTime), 3)
+		return false
+	end
 
 	return true
 end
